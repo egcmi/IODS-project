@@ -2,8 +2,8 @@
 
 # About the project
 
-Link to [my GitHub repository](https://github.com/egcmi/IODS-project)
+Link to [my GitHub repository](https://github.com/egcmi/IODS-project).
 
-Link to [my course diary](https://egcmi.github.io/IODS-project/)
+Link to [my course diary](https://egcmi.github.io/IODS-project/).
 
 Our era of data - larger than ever and complex like chaos - requires several skills from statisticians and other data scientists. We must discover the patterns hidden behind numbers in matrices and arrays. We are not afraid of coding, recoding, programming, or modelling. We want to visualize, analyze, interpret, understand, and communicate. These are the core themes of Open Data Science  (Open Data - Open Science - Data Science). And this course is THE course for learning these skills.
