@@ -1,6 +1,6 @@
 ###### IODS - Introduction to Open Data Science - 2017
-
-# About the project
+# Week 1:
+## About the project
 
 Link to [my GitHub repository](https://github.com/egcmi/IODS-project).
 
