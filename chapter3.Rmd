@@ -1,0 +1,50 @@
+---
+output: html_document
+---
+
+###### IODS - Introduction to Open Data Science - 2017
+
+# Week 3:
+## Logistic regression
+
+Data wrangling exercise can be found in file "data/create_alc.R".
+
+The dataset concerns correlation between alcohol usage and social, gender and study time attributes for each student.
+```{r}
+alc <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/alc.txt", header=TRUE, sep=",")
+colnames(alc)
+dim(alc)
+```
+
+The dimension of the data is 382 observations of 35 variables. The variables contain background information about each student, their families, their schooling and sparetime as well as their alcohol consumption. Please check this link for more information on the dataset: [STUDENT ALCOHOL CONSUMPTION](https://archive.ics.uci.edu/ml/datasets/STUDENT+ALCOHOL+CONSUMPTION).
+
+The goal of this analysis is to study the relationships between high/low alcohol consumption and 4 variables, namely studytime, failures, goout and freetime.
+The hypotheses advanced are as follows:
+
+* longer studytime is correlated with lower alcohol consumption;
+* more failures are correlated with higher alcohol consumption;
+* going out with friends more often is correlated with higher alcohol consumption;
+* more freetime is correlated with higher alcohol consumption.
+
+```{r}
+summary(alc$studytime)
+summary(alc$failures)
+summary(alc$goout)
+summary(alc$freetime)
+```
+
+Students have weekly sudytime ranging 1 - 4 (<2 - >10) with a mean of 2,034, failed 0 - 3 classes with a mean of 0.2903, go out with friends ranging 1 - 5 (very low - very high) with a mean of 3.113 and have freetime ranging 1 - 5 (very low - very high) with a mean of 3.223.
+
+```{r}
+alc_vars <- alc[, c(16, 17, 25, 26, 34)]
+str(alc_vars)
+```
+
+I collected the variables studytime, failures, goout, freetime and alc_use under a smaller dataset.
+
+```{r}
+library(tidyr); library(dplyr); library(ggplot2)
+glimpse(alc_vars)
+gather(alc_vars) %>% ggplot(aes(value)) + geom_bar() + facet_wrap("key", scales = "free")
+```
+

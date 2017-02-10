@@ -46,4 +46,4 @@ head(learning2014)
 dim(learning2014)
 
 # save analysis dataset
-write.table(learning2014, file="/home/emanuela/Desktop/UNI/Introduction to Open Data Science/IODS-project/data//learning2014.txt", sep="\t")
+write.table(learning2014, file="/home/emanuela/Desktop/UNI/Introduction to Open Data Science/IODS-project/data/learning2014.txt", sep="\t")
