@@ -36,11 +36,11 @@ summary(alc$freetime)
 Students have weekly sudytime ranging 1 - 4 (<2 - >10) with a mean of 2,034, failed 0 - 3 classes with a mean of 0.2903, go out with friends ranging 1 - 5 (very low - very high) with a mean of 3.113 and have freetime ranging 1 - 5 (very low - very high) with a mean of 3.223.
 
 ```{r}
-alc_vars <- alc[, c(16, 17, 25, 26, 34)]
+alc_vars <- alc[, c(16, 17, 25, 26, 34, 35)]
 str(alc_vars)
 ```
 
-I collected the variables studytime, failures, goout, freetime and alc_use under a smaller dataset.
+I collected the variables studytime, failures, goout, freetime, alc_use and high_use under a smaller dataset.
 
 ```{r}
 library(tidyr); library(dplyr); library(ggplot2)
@@ -48,3 +48,21 @@ glimpse(alc_vars)
 gather(alc_vars) %>% ggplot(aes(value)) + geom_bar() + facet_wrap("key", scales = "free")
 ```
 
+High alcohol consumption is present in ~100 observations, the vast majority of observations never failed a class, freetime is balanced for ~150 observations, going out is baanced for ~125 observations, ~100 observations study less than 2 hours per week, ~200 observations study 2 to 5 hours per week, ~50 study 5 to 10 hours per week and ~20 study more than 10 hours per week.
+
+```{r}
+ggplot(data=alc, aes(x = high_use, y = studytime)) + geom_jitter()
+ggplot(data=alc, aes(x = high_use, y = failures)) + geom_jitter()
+ggplot(data=alc, aes(x = high_use, y = goout)) + geom_jitter()
+ggplot(data=alc, aes(x = high_use, y = freetime)) + geom_jitter()
+
+```
+
+The plots seem to support my initial hypotheses, except for the variable failures (high number of failures is not associated with high alcohol consumption) and freetime (balanced freetime seems to be correlated with alcohol consumption).
+
+
+```{r}
+glm(formula = high_use ~ studytime + failures + goout + freetime, data = alc, family = "binomial") %>% summary
+```
+
+From the coefficients we can deduce that the chosen variables are significant.
