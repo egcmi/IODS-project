@@ -1,0 +1,23 @@
+---
+output: html_document
+---
+
+###### IODS - Introduction to Open Data Science - 2017
+
+# Week 4:
+## Clustering and classification
+
+```{r}
+library(MASS)
+data("Boston")
+dim(Boston)
+str(Boston)
+summary(Boston)
+#library(tidyr); library(dplyr); library(ggplot2)
+pairs(Boston)
+library(corrplot)
+cor_matrix <- cor(Boston)
+cor_matrix  %>% round(digits = 2)
+corrplot(cor_matrix, method="circle", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+```
+
