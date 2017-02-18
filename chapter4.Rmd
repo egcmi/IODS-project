@@ -8,7 +8,7 @@ output: html_document
 ## Clustering and classification
 
 ```{r}
-library(MASS)
+library(MASS); library(dplyr)
 data("Boston")
 dim(Boston)
 str(Boston)
@@ -16,8 +16,20 @@ summary(Boston)
 #library(tidyr); library(dplyr); library(ggplot2)
 pairs(Boston)
 library(corrplot)
-cor_matrix <- cor(Boston)
-cor_matrix  %>% round(digits = 2)
-corrplot(cor_matrix, method="circle", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+cor_matrix <- round(cor(Boston), digits = 2)
+corrplot(cor_matrix, method="circle", type="upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+boston_scaled <- scale(Boston)
+summary(boston_scaled)
+boston_scaled <- as.data.frame(boston_scaled)
+scaled_crim <- boston_scaled$crim
+summary(scaled_crim)
+bins <- quantile(scaled_crim)
+crim <- cut(scaled_crim, breaks = bins, include.lowest = TRUE, label = c("low", "med_low", "med_high", "high"))
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+n <- nrow(boston_scaled)
+ind <- sample(n, size=(n * 0.8))
+train <- boston_scaled[ind,]
+test <- boston_scaled[-ind,]
+
 ```
 
