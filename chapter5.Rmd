@@ -27,7 +27,7 @@ names(pca_human_std)
 ```
 
 ```{r}
-library()
+library(FactoMineR)
 data("tea")
 #tea <- read.table("http://factominer.free.fr/book/tea.csv", header=T, sep=",", dec=".")
 str(tea)
