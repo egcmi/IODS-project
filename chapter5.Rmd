@@ -6,45 +6,80 @@ output: html_document
 # Week 5:
 ## Dimensionality reduction techniques
 
-```{r}
+### Human Development Index
+
+The following dataset concerns the Human Development Index, assessing the development of various countries in the world, not only in economic terms. It contains 155 observations of 8 variables.
+```{r echo=FALSE}
 human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", header=TRUE, sep=",")
-str(human)
 dim(human)
+str(human)
 ```
 
+For each country, the variables are: Edu2.FM (ratio between proportion of females with at least secondary education and proportion of males with at least secondary education), Labo.FM (ratio between proportion of females in the labour force and proportion of males in the labour force), Edu.Exp (expected years of schooling), Life.Exp (life expectancy at birth), GNI (Gross National Income per capita), Mat.Mor (maternal mortality ratio), Ado.Birth (adolescent birth rate), Parli.F (percentage of female representatives in parliament).
 
-```{r}
+Let us visualize the data and take a look at the correlation between the variables:
+```{r echo=FALSE}
 library(GGally); library(corrplot); library(tidyr)
-ggpairs(human)
 summary(human)
-corrplot(cor(human))
+ggpairs(human)
+cor(human) %>% corrplot(method="circle", type="upper", cl.pos="b", tl.pos="d",tl.cex=0.6)
 ```
+We can notice some strong correlation between several pairs of variables. Edu2.FM, Edu.Exp, Life.Exp and GNI are all negatively correlated to Mat.Mor and Ado.Birth. Labo.FM and Parli.F don't seem to be have any correlation to the other variables. Edu.Exp and Life.Exp as well as Mat.Mor and Ado.Birth are strongly positively correlated. Edu2.FM is positively correlated to Edu.Exp, Life.Exp and GNI. GNI is also positively correlated to Life.Exp and Edu.Exp
 
-
-```{r}
+Let us perform Principal Component Analysis on the data and then visualize the results with a biplot:
+```{r echo=FALSE}
 pca_human <- prcomp(human)
 biplot(pca_human, choices=1:2)
 ```
 
+The biplot shows the arrow for GNI but the others are not visible because they have length 0. This means that GNI captures all the variance. Overall this biplot is not very informative since it doesn't show arrows for all other variables, the plot is not centered, it is not possible to read all the countries' names because they are either all in the same spot or out of sight in the plot.
 
-```{r}
+Let us standardise the data and then perform PCA on the standardised data:
+```{r echo=FALSE}
 human_std <- scale(human)
 summary(human_std)
+cat("\n")
 pca_human_std <- prcomp(human_std)
-biplot(pca_human_std, choices=1:2)
+sum_pca = summary(pca_human_std)
+sum_pca
+cat("\n")
+round(100*sum_pca$importance[2, ], digits = 1)
+biplot(pca_human_std, choices=1:2, cex=c(0.5, 1), col=c("gray", "red"))
 
-names(human_std)
-names(pca_human_std)
 ```
 
-```{r}
+Finally the biplot shows some meaningful data. The first two variables PC1 and PC2 capture altogether 69.9% of variation. PC1 captures two groups: on the right-hand side Mat.Mor and Ado.Birth, strongly positively correlated, and on the left-hand side Edu2.FM, Edu.Exp, GNI and Life.Exp, also strongly posirively correlated. These two groups are strongly negatively correlated. PC1 can be said to indicate the population's well being in general in that coutry. PC2 captures Labo.FM and Parli.F that is to say gender equality. In conclusion this means that the more a country appears on the left-hand side, the more such country is wealthy and that the more a country appears at the top of the biplot, the more gender-equal such country is.
+
+***
+### Tea time
+
+The tea dataset has 300 observations of 36 variables. The data was gathered by means of a questionnaire on tea consumption. The dataset contains information regarding their consumption and perception of tea, as well as some background information about the person interviewed.
+```{r echo=FALSE}
 library(FactoMineR); library(ggplot2); library(dplyr)
 data("tea")
 #tea <- read.table("http://factominer.free.fr/book/tea.csv", header=T, sep=",", dec=".")
-str(tea)
 dim(tea)
+str(tea)
 summary(tea)
-ggpairs(tea)
-gather(tea) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
 ```
 
+
+Let us visualize the dataset:
+```{r echo=FALSE}
+library(ggplot2)
+gather(tea) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 20, hjust = 0.5, size = 5))
+```
+
+
+Now let us choose some of the variables in the dataset and perform Multiple Correspondence Analysis:
+```{r echo=FALSE}
+keep <- c("Tea", "How", "sugar", "frequency")
+tea <- select(tea, one_of(keep))
+mca <- MCA(tea, graph = FALSE)
+summary(mca)
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+The chosen variables are: Tea (kind of tea: black, earl grey, green), How (how the person interviewed drinks the tea: plain, with milk, with lemon, other), sugar (whether they drink sugared tea or not) and frequency (how often they drink tea). The first 4 dimensions capture a bit more than half of the variance (52.2%) Tea has a mild square correlation to Dim.1 and Dim.2. How has a strong squared correlation to Dim.2 and Dim.3. Sugar has a mild square correlation to Dim.1. Frequency has negligible square correlations to Dim.1 and Dim.2 but strong square correlation to Dim.3.
+
+It seems that the majority drink tea 2 or more times a day, with milk or just plan tea and Earl Grey tea is preferred. Sugar does not play an important role. Having tea less often, such as once a day or 3-6 times a week is also popular. Those who drink green tea have the least common tea habits compared to others.
